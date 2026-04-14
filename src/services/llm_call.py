@@ -9,7 +9,7 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY",""))
 
 # define the function that is call the LLM
-def call_llm_handler(paper_questions:str):
+def call_llm_handler(header_data:str,paper_questions:str):
         
         try:
          prompt = f"""
@@ -32,6 +32,9 @@ def call_llm_handler(paper_questions:str):
                     "Date":"DD-MM-YYYY"
                 }}
             }}
+
+            Header data:
+            {header_data}
 
             Respond ONLY in this exact JSON format, no extra text outside JSON:
             {{
