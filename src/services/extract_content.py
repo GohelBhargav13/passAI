@@ -7,7 +7,7 @@ def extract_pdf_content(file) -> dict:
     # collect a data from the pdf
     page_data = ""
     for page in pdf_read.pages:
-        line = ' '.join(page.extract_text().strip())
+        line = ' '.join(page.extract_text().split())
 
         # extra check for the unexpected words
         if not line:
@@ -30,5 +30,6 @@ def extract_pdf_content(file) -> dict:
     header_data = page_data[:actual_data_index]    
     actual_data = page_data[actual_data_index:]
 
-    return { "status":True,"message":"Data extract successfully","header_data":header_data,"actual_data":actual_data }
+    return { "status":True,"message":"Data extract successfully","header_data":header_data,
+    "actual_data":actual_data }
 
