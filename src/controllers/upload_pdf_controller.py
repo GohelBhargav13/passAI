@@ -2,6 +2,8 @@ from flask import request,Blueprint,jsonify
 from src.utills.apierror import ApiError
 from src.services.check_file_ext import check_file_ext
 from src.services.extract_content import extract_pdf_content
+from src.services.llm_call import call_llm_handler
+from src.utills.clean_response import llm_response_cleaner
 
 # define the blue print of the analyze pdf
 upload_pdf = Blueprint("upload_pdf",__name__)
@@ -27,7 +29,16 @@ def get_paper_details():
     if not extract_result.get("status"):
         raise ApiError(400,"error while extract the data from pdf")
     
-    return jsonify({ "statuscode":200,"message":"data extract from pdf","data":extract_result["actual_data"] })
+    # Now calling a LLM for the paper response
+    response_llm = call_llm_handler(extract_result["actual_data"])
+
+    if not response_llm["status"]:
+        raise ApiError(400,"Error from the LLM response")
+    
+    # clean the LLM response
+    clean_response = llm_response_cleaner(response_llm["final_output"])
+    
+    return jsonify({ "statuscode":200,"message":"Full paper Analysis done successfully","final_response_data":clean_response })
 
     
     
