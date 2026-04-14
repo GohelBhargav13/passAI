@@ -30,7 +30,7 @@ def get_paper_details():
         raise ApiError(400,"error while extract the data from pdf")
     
     # Now calling a LLM for the paper response
-    response_llm = call_llm_handler(extract_result["actual_data"])
+    response_llm = call_llm_handler(extract_result["header_data"],extract_result["actual_data"])
 
     if not response_llm["status"]:
         raise ApiError(400,"Error from the LLM response")
