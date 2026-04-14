@@ -6,9 +6,3 @@ class ApiError(Exception):
         self.message = message
         self.success = success
     
-    def to_dict(self):
-        return {
-            "success":self.success,
-            "statuscode":self.statuscode,
-            "message":self.message
-        }
