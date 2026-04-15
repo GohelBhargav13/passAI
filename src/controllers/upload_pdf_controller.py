@@ -1,9 +1,10 @@
-from flask import request,Blueprint,jsonify
+from flask import request,Blueprint,jsonify,json
 from src.utills.apierror import ApiError
 from src.services.check_file_ext import check_file_ext
 from src.services.extract_content import extract_pdf_content
 from src.services.llm_call import call_llm_handler
 from src.utills.clean_response import llm_response_cleaner
+from src.services.db_operation import save_response_in_db
 
 # define the blue print of the analyze pdf
 upload_pdf = Blueprint("upload_pdf",__name__)
@@ -37,8 +38,14 @@ def get_paper_details():
     
     # clean the LLM response
     clean_response = llm_response_cleaner(response_llm["final_output"])
-    
-    return jsonify({ "statuscode":200,"message":"Full paper Analysis done successfully","final_response_data":clean_response })
+    clean_response =  json.loads(clean_response.replace('\n',""))
+
+    # database call can be here for save the response in database
+    db_status = save_response_in_db(clean_response)
+
+    # if the status is True than send a response to the client
+    if db_status["status"]:
+        return jsonify({ "statuscode":200,"message":"Full paper Analysis done successfully","final_response_data":clean_response })
 
     
     

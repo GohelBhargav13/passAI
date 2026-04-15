@@ -10,8 +10,8 @@ def create_app():
     # setup the CORS after app intialization (r is the regular expression that is used for the match)
     CORS(app,resources=
         {
-            r"/api/*":{
-                      "origins":"http://127.0.0.1:5500",
+            r"/api/v1/*":{
+                      "origins":"http://localhost:5173",
                       "methods":["GET","POST","DELETE","OPTIONS"]
                       } 
         },
@@ -21,7 +21,7 @@ def create_app():
 
     # register a blueprint with the prefix url
     # app.register_blueprint(select_controller,url_prefix='/api')
-    app.register_blueprint(upload_pdf,url_prefix="/api")
+    app.register_blueprint(upload_pdf,url_prefix="/api/v1")
 
     # register a error handlers that is mendatory
     api_error_handlers(app)

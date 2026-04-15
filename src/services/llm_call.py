@@ -18,26 +18,23 @@ def call_llm_handler(header_data:str,paper_questions:str):
             Analyze the following GTU exam paper. For EACH question:
             1. Extract the exact question text
             2. Classify difficulty: EASY, MEDIUM, or HARD
-            3. Give a brief answer in 2-3 lines
-            4. Give one preparation tip
+            3. Give a brief answer in 4-5 lines
+            4. Give two preparation tip
             5. How to pass this particular subject (Ex. TOC) with all possible roadmap
 
             Here is the separate part like header of the paper get the details and 
             respond ONLY in this excat JSON format for header, no extra text outside JSON:
-            {{
-                "header_details":{{
-                    "subject_name":"subject name from paper",
-                    "branch":"for which branch",
-                    "subject_code":"3160704",
-                    "Date":"DD-MM-YYYY"
-                }}
-            }}
-
             Header data:
             {header_data}
 
             Respond ONLY in this exact JSON format, no extra text outside JSON:
             {{
+                "header_details":{{
+                        "subject_name":"subject name from paper",
+                        "branch":"for which branch",
+                        "subject_code":"3160704",
+                        "Date":"DD-MM-YYYY"
+                    }},
                 "questions": [
                     {{
                         "id": 1,
@@ -50,7 +47,7 @@ def call_llm_handler(header_data:str,paper_questions:str):
                     }}
                 ],
                 "pass_strategy": "overall strategy to pass this exam"
-                "diffculty_paper(%)":"How much difficult this particular paper with (%)"
+                "diffculty_paper":"How much difficult this particular paper with (%)"
             }}
 
             EXAM PAPER:
@@ -69,7 +66,7 @@ def call_llm_handler(header_data:str,paper_questions:str):
                         "content":prompt
                     }
                 ],
-                model="llama-3.3-70b-versatile",
+                model="meta-llama/llama-4-scout-17b-16e-instruct",
                 temperature=0.2,
                 max_tokens=3700
         )
