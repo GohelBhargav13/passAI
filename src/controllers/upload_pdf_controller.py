@@ -13,6 +13,7 @@ upload_pdf = Blueprint("upload_pdf",__name__)
 @upload_pdf.route("/upload-pdf",methods=["POST"])
 def get_paper_details():
     file = request.files.get("paper-pdf")
+    user_prompt = request.form.get("userprompt")
 
     # check if the file is not found
     if not file:
@@ -30,22 +31,35 @@ def get_paper_details():
     if not extract_result.get("status"):
         raise ApiError(400,"error while extract the data from pdf")
     
-    # Now calling a LLM for the paper response
-    response_llm = call_llm_handler(extract_result["header_data"],extract_result["actual_data"])
-
-    if not response_llm["status"]:
-        raise ApiError(400,"Error from the LLM response")
+    try:
     
-    # clean the LLM response
-    clean_response = llm_response_cleaner(response_llm["final_output"])
-    clean_response =  json.loads(clean_response.replace('\n',""))
+        # Now calling a LLM for the paper response
+        response_llm = call_llm_handler(extract_result["header_data"],extract_result["actual_data"],user_prompt)
 
-    # database call can be here for save the response in database
-    db_status = save_response_in_db(clean_response)
+        if not response_llm["status"]:
+            raise ApiError(400,"Error from the LLM response")
+        
+        # clean the LLM response
+        clean_response = llm_response_cleaner(response_llm["final_output"])
+        print("clean response",clean_response)
+        if clean_response.strip():
+            try:
+                # try to load the response in json format
+                 clean_response = json.loads(clean_response)
+            except Exception as e:
+                raise ApiError(500,"Unable to load a response")
+        else:
+            raise ApiError(500,"LLM response is empty and not correct")
 
-    # if the status is True than send a response to the client
-    if db_status["status"]:
-        return jsonify({ "statuscode":200,"message":"Full paper Analysis done successfully","final_response_data":clean_response })
+        # database call can be here for save the response in database
+        db_status = save_response_in_db(clean_response)
+
+        # if the status is True than send a response to the client
+        if db_status["status"]:
+            return jsonify({ "statuscode":200,"message":"Full paper Analysis done successfully","final_response_data":clean_response })
+        
+    except ApiError as e:
+        raise ApiError(e.statuscode,e.message or e.error)
 
     
     

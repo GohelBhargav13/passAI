@@ -26,3 +26,7 @@ create table if not exists user_history (
 
 )
 
+-- adding a constaint to user_history table to link with users table
+alter table user_history
+add constraint user_history_ibfk_1 foreign key(user_id) references users(user_id) on delete cascade;
+

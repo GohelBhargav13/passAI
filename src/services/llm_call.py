@@ -9,7 +9,7 @@ load_dotenv()
 client = Groq(api_key=os.getenv("GROQ_API_KEY",""))
 
 # define the function that is call the LLM
-def call_llm_handler(header_data:str,paper_questions:str):
+def call_llm_handler(header_data:str,paper_questions:str,user_prompt:str):
         
         try:
          prompt = f"""
@@ -21,6 +21,11 @@ def call_llm_handler(header_data:str,paper_questions:str):
             3. Give a brief answer in 4-5 lines
             4. Give two preparation tip
             5. How to pass this particular subject (Ex. TOC) with all possible roadmap
+            6. if there is a small programs of any language like C, C++, Java, Python etc. then also provide the programs and explain the program in brief
+
+            one more thing, if the user prompt is not empty then also consider the user prompt for the analysis and give a answer according to the user prompt.
+
+            {user_prompt}
 
             Here is the separate part like header of the paper get the details and 
             respond ONLY in this excat JSON format for header, no extra text outside JSON:
@@ -29,6 +34,11 @@ def call_llm_handler(header_data:str,paper_questions:str):
 
             Respond ONLY in this exact JSON format, no extra text outside JSON:
             {{
+                "user_prompt":{{
+                    "is_prompt_provided": true or false (user provide a prompt or not),
+                    "prompt": "{user_prompt}",
+                    "prompt_analysis":"provide the analysis of the paper as per the user prompt, only provide the theory in every paper, if the user prompt is empty than not need to provide the analysis for the user prompt"
+                }}
                 "header_details":{{
                         "subject_name":"subject name from paper",
                         "branch":"for which branch",
@@ -66,7 +76,7 @@ def call_llm_handler(header_data:str,paper_questions:str):
                         "content":prompt
                     }
                 ],
-                model="meta-llama/llama-4-scout-17b-16e-instruct",
+                model="llama-3.1-8b-instant",
                 temperature=0.2,
                 max_tokens=3700
         )

@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_cors import CORS
 from src.controllers.upload_pdf_controller import upload_pdf
+from src.controllers.user_history import user_history
 from src.utills.api_error_handler import api_error_handlers
 
 # create the function for the calling the app everytime
@@ -21,7 +22,8 @@ def create_app():
 
     # register a blueprint with the prefix url
     # app.register_blueprint(select_controller,url_prefix='/api')
-    app.register_blueprint(upload_pdf,url_prefix="/api/v1")
+    app.register_blueprint(upload_pdf,url_prefix="/api/v1/paper")
+    app.register_blueprint(user_history,url_prefix="/api/v1/user")
 
     # register a error handlers that is mendatory
     api_error_handlers(app)
