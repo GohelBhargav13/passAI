@@ -5,7 +5,7 @@ export default function PaperOverviewCard({ difficulty }) {
 
       <div className="h-3 w-full overflow-hidden rounded-full bg-slate-100">
         <div
-          className="h-full rounded-full bg-gradient-to-r from-violet-600 to-fuchsia-500"
+          className="h-full rounded-full bg-linear-to-r from-violet-600 to-fuchsia-500"
           style={{ width: difficulty || "0%" }}
         />
       </div>

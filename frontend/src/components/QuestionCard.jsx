@@ -26,7 +26,7 @@ export default function QuestionCard({ item }) {
       </div>
 
       {/* Content Section: flex-grow ensures it takes available space */}
-      <div className="flex-grow">
+      <div className="grow mb-5">
         <h3 className="text-xl font-semibold leading-8 text-slate-900 mb-3">
           {item.question}
         </h3>

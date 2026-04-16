@@ -12,6 +12,7 @@ export function FileUpload() {
   const [isGetRes,setIsRes] = useState(false)
   const [apiresponse,setApiResponse] = useState(null)
   const [userId,setUserId] = useState(null)
+  const [isUserPrompt,setUserPrompt] = useState(null)
   const fileInputRef = useRef(null);
 
   const handleFileSelect = (event) => {
@@ -56,6 +57,8 @@ export function FileUpload() {
         const  fd = new FormData()
         fd.append("paper-pdf",selectedFile)
         fd.append("userId",userId)
+        fd.append("userprompt",isUserPrompt)
+
         setIsAnalyzing(true)
         const response = await apiClient.uploadFile(fd);
         console.log('Upload response:',response?.final_response_data);
@@ -65,6 +68,7 @@ export function FileUpload() {
             setIsAnalyzing(false)
             setSelectedFile(null)
             setIsSubmitted(false)
+            setUserPrompt(null)
             return
         }
         toast.success(response?.message)
@@ -80,10 +84,12 @@ export function FileUpload() {
               setIsRes(false)
               setSelectedFile(null)
               setIsSubmitted(false)
+              setUserPrompt(null)
           }
         }else {
               setIsAnalyzing(false)
               setIsRes(true)
+              setUserPrompt(null)
               setApiResponse(response?.final_response_data)
         }
       }catch(error){
@@ -92,6 +98,7 @@ export function FileUpload() {
         setIsAnalyzing(false)
         setSelectedFile(null)
         setIsSubmitted(false)
+        setUserPrompt(null)
       }
     }
   };
@@ -116,13 +123,14 @@ export function FileUpload() {
 
   // for fecth the userid from the local storage and set it to the state
   useEffect(() => {
-    const userId = JSON.parse(localStorage.getItem("userId"));
-    setUserId(userId)
 
-    if (userId == null) {
-      const userId = crypto.randomUUID()
-      localStorage.setItem("userId",JSON.stringify(userId))
-      setUserId(userId)
+    // check first userid is there in localstorage or not
+    if (JSON.parse(localStorage.getItem("userId")) !== null) {
+        setUserId(JSON.parse(localStorage.getItem("userId")))
+    }else{
+        const userId = crypto.randomUUID().trim();
+        localStorage.setItem("userId",JSON.stringify(userId))
+        setUserId(userId)
     }
 
   },[])
@@ -155,11 +163,11 @@ export function FileUpload() {
               id="file-upload"
               multiple={true}
             />
-
+    
             {!selectedFile ? (
               <div className="space-y-4">
                 <div className="flex justify-center">
-                  <div className="w-20 h-20 bg-gradient-to-br from-violet-100 to-fuchsia-100 rounded-full flex items-center justify-center">
+                  <div className="w-20 h-20 bg-linear-to-br from-violet-100 to-fuchsia-100 rounded-full flex items-center justify-center">
                     <Upload className="w-10 h-10 text-violet-600" />
                   </div>
                 </div>
@@ -171,21 +179,21 @@ export function FileUpload() {
                     </span>
                   </p>
                   <p className="text-sm text-gray-500">
-                    Supports all file types
+                    Supports only pdf
                   </p>
                 </div>
               </div>
             ) : (
               <div className="space-y-4">
                 <div className="flex justify-center">
-                  <div className="w-20 h-20 bg-gradient-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center">
+                  <div className="w-20 h-20 bg-linear-to-br from-green-100 to-emerald-100 rounded-full flex items-center justify-center">
                     <CheckCircle2 className="w-10 h-10 text-green-600" />
                   </div>
                 </div>
                 <div className="bg-white rounded-xl p-4 border border-green-200">
                   <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-3 flex-1 min-w-0">
-                      <FileText className="w-8 h-8 text-violet-600 flex-shrink-0" />
+                      <FileText className="w-8 h-8 text-violet-600 shrink-0" />
                       <div className="text-left flex-1 min-w-0">
                         <p className="font-semibold text-gray-800 truncate">
                           {selectedFile.name}
@@ -200,7 +208,9 @@ export function FileUpload() {
               </div>
             )}
           </div>
-
+            <div>
+                    <input type="text" className='w-full h-full py-2 px-2 bg-linear-to-br from-violet-100 to-fuchsia-100 rounded-sm flex items-center justify-center mt-2' placeholder="Enter what you want..." onChange={(e) => setUserPrompt(e.target.value) } /> 
+            </div>
           <div className='flex gap-3'>
           {/* Submit Button */}
           <button
@@ -208,12 +218,12 @@ export function FileUpload() {
             disabled={!selectedFile || isSubmitted}
             className={`w-full mt-6 py-4 px-6 rounded-xl font-semibold text-lg transition-all duration-300 ${
               selectedFile && !isSubmitted
-                ? 'bg-gradient-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 transform hover:scale-[1.02]'
+                ? 'bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 transform hover:scale-[1.02]'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
             {isSubmitted && isAnalyzing ? (
-              <span className="flex items-center justify-center gap-2">
+              <span className="flex items-center justify-center gap-2 sm:text-sm md:text-md">
                 <CheckCircle2 className="w-5 h-5" />
                 Analyzing Paper...
               </span>
@@ -235,7 +245,7 @@ export function FileUpload() {
         {/* Info Section */}
         <div className="mt-6 p-4 bg-violet-50 rounded-xl border border-violet-100">
           <div className="flex items-start gap-3">
-            <div className="w-5 h-5 rounded-full bg-violet-200 flex items-center justify-center flex-shrink-0 mt-0.5">
+            <div className="w-5 h-5 rounded-full bg-violet-200 flex items-center justify-center shrink-0 mt-0.5">
               <span className="text-violet-700 text-xs font-bold">i</span>
             </div>
             <div className="text-sm text-gray-600">

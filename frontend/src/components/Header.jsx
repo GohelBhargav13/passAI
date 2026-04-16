@@ -1,4 +1,5 @@
 import { FileText } from "lucide-react";
+import { NavLink } from "react-router-dom";
 
 export default function Header() {
   return (
@@ -7,12 +8,12 @@ export default function Header() {
         <div className="flex items-center justify-between h-16">
           
           <div className="flex items-center gap-3">
-            <div className="flex items-center justify-center w-11 h-11 bg-gradient-to-br from-violet-600 to-fuchsia-600 rounded-xl shadow-lg shadow-violet-500/20">
+            <div className="flex items-center justify-center w-11 h-11 bg-linear-to-br from-violet-600 to-fuchsia-600 rounded-xl shadow-lg shadow-violet-500/20">
               <FileText className="w-5 h-5 text-white" />
             </div>
 
             <div>
-              <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent leading-tight">
+              <h1 className="text-lg sm:text-xl font-bold bg-linear-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent leading-tight">
                 PassAI
               </h1>
               <p className="text-xs sm:text-sm text-gray-500 leading-tight">
@@ -22,12 +23,12 @@ export default function Header() {
           </div>
 
           <div className="hidden sm:flex items-center gap-3">
-            <a href="/" className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition">
+            <NavLink to="/" className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition">
               Home
-            </a>
-            <button className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition">
+            </NavLink>
+            <NavLink to={`/history/${JSON.parse(localStorage.getItem("userId"))}`} className="px-4 py-2 rounded-lg bg-violet-600 text-white     text-sm font-medium hover:bg-violet-700 transition">
               History
-            </button>
+            </NavLink>
           </div>
 
         </div>
