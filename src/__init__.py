@@ -12,7 +12,7 @@ def create_app():
     CORS(app,resources=
         {
             r"/api/v1/*":{
-                      "origins":"http://localhost:5173",
+                      "origins":["https://pass-ai-pro.vercel.app","http://localhost:5173"],
                       "methods":["GET","POST","DELETE","OPTIONS"]
                       } 
         },
