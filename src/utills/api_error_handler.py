@@ -12,3 +12,12 @@ def api_error_handlers(app):
             "statuscode":  error.statuscode,
             "message": error.message
         }), error.statuscode
+    
+    # Generic error handler for unhandled exceptions
+    # @app.errorhandler(Exception)
+    # def handle_generic_error(error:Exception):
+    #     return jsonify({
+    #         "success": False,
+    #         "statuscode": 500,
+    #         "message": "Internal Server Error"
+    #     }), 500

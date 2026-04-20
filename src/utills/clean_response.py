@@ -1,7 +1,12 @@
 # Handler for cleaning the response getting from the LLM
+from src.utills.apierror import ApiError
 
 def llm_response_cleaner(llm_response:str):
-    if llm_response.startswith("```") and llm_response.endswith("```") or llm_response.startswith("```json"):
-        llm_response = llm_response.replace("```json","").replace("```","").strip()
-        return llm_response
-    return llm_response
+    if not llm_response.strip():
+        raise ApiError(500,"LLM response is empty")
+    else:
+        cleaned_response = llm_response.strip()
+        cleaned_response = cleaned_response.replace("\n","")
+        cleaned_response = cleaned_response.removeprefix("```json").removeprefix("```")
+        cleaned_response = cleaned_response.removesuffix("```")
+        return cleaned_response
