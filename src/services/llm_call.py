@@ -5,46 +5,54 @@ from src.utills.apierror import ApiError
 
 load_dotenv()
 
-# make a Groq client 
-client = Groq(api_key=os.getenv("GROQ_API_KEY",""))
+# Fail fast if API key is missing
+api_key = os.getenv("GROQ_API_KEY")
+if not api_key:
+    raise ValueError("GROQ_API_KEY is not set in environment variables")
 
-# define the function that is call the LLM
-def call_llm_handler(header_data:str,paper_questions:str,user_prompt:str):
-        
-        try:
-         prompt = f"""
+client = Groq(api_key=api_key)
+
+
+def call_llm_handler(header_data: str, paper_questions: str, user_prompt: str):
+
+    # Validate inputs
+    if not header_data or not header_data.strip():
+        raise ApiError(400, "Header data is empty")
+    if not paper_questions or not paper_questions.strip():
+        raise ApiError(400, "Paper questions are empty")
+
+    try:
+        prompt = f"""
             You are an expert GTU (Gujarat Technological University) exam paper analyzer.
 
             Analyze the following GTU exam paper. For EACH question:
             1. Extract the exact question text
             2. Classify difficulty: EASY, MEDIUM, or HARD
             3. Give a brief answer in 4-5 lines
-            4. Give two preparation tip
-            5. How to pass this particular subject (Ex. TOC) with all possible roadmap
-            6. if there is a small programs of any language like C, C++, Java, Python etc. then also provide the programs and explain the program in brief
+            4. Give two preparation tips
+            5. How to pass this particular subject with a full roadmap
+            6. If there are small programs (C, C++, Java, Python etc.), provide and explain them briefly
 
-            one more thing, if the user prompt is not empty then also consider the user prompt for the analysis and give a answer according to the user prompt.
+            If the user prompt is not empty, also consider it in your analysis.
 
-            {user_prompt}
+            User Prompt: {user_prompt}
 
-            Here is the separate part like header of the paper get the details and 
-            respond ONLY in this excat JSON format for header, no extra text outside JSON:
-            Header data:
+            Header data (extract subject details from this):
             {header_data}
 
             Respond ONLY in this exact JSON format, no extra text outside JSON:
             {{
-                "user_prompt":{{
-                    "is_prompt_provided": true or false (user provide a prompt or not),
+                "user_prompt": {{
+                    "is_prompt_provided": true or false,
                     "prompt": "{user_prompt}",
-                    "prompt_analysis":"provide the analysis of the paper as per the user prompt, only provide the theory in every paper, if the user prompt is empty than not need to provide the analysis for the user prompt"
-                }}
-                "header_details":{{
-                        "subject_name":"subject name from paper",
-                        "branch":"for which branch",
-                        "subject_code":"3160704",
-                        "Date":"DD-MM-YYYY"
-                    }},
+                    "prompt_analysis": "analysis as per user prompt, empty string if no prompt"
+                }},
+                "header_details": {{
+                    "subject_name": "subject name from paper",
+                    "branch": "for which branch",
+                    "subject_code": "3160704",
+                    "Date": "DD-MM-YYYY"
+                }},
                 "questions": [
                     {{
                         "id": 1,
@@ -56,33 +64,35 @@ def call_llm_handler(header_data:str,paper_questions:str,user_prompt:str):
                         "prep_tip": "how to prepare"
                     }}
                 ],
-                "pass_strategy": "overall strategy to pass this exam"
-                "diffculty_paper":"How much difficult this particular paper with (%)"
+                "pass_strategy": "overall strategy to pass this exam",
+                "difficulty_paper": "How difficult this paper is in (%)"
             }}
 
             EXAM PAPER:
             {paper_questions}
         """
-        
-        # LLM calling with client system role
-         response = client.chat.completions.create(
-                messages=[
-                    {
-                        "role":"system",
-                        "content":"You are a helpful assistant.You have a knowledge about All GTU subjects and also you master i teaching that's why you provide a good response"
-                    },
-                    {
-                        "role":"user",
-                        "content":prompt
-                    }
-                ],
-                model="llama-3.1-8b-instant",
-                temperature=0.2,
-                max_tokens=3700
+
+        response = client.chat.completions.create(
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are a helpful assistant with deep knowledge of all GTU subjects. Always respond in valid JSON only."
+                },
+                {
+                    "role": "user",
+                    "content": prompt
+                }
+            ],
+            model="llama-3.3-70b-versatile", 
+            temperature=0.2,
+            max_tokens=6000                   
         )
-         
-        # returning a response to the other services
-         return {"status":True,"message":"Data is fecth from the LLM","final_output":response.choices[0].message.content}
-        
-        except Exception as e:
-            raise ApiError(500,str(e))
+
+        return {
+            "status": True,
+            "message": "Data fetched from LLM successfully",
+            "final_output": response.choices[0].message.content
+        }
+    
+    except Exception as e:
+        raise ApiError(500, f"LLM call failed: {str(e)}")
