@@ -14,7 +14,6 @@ upload_pdf = Blueprint("upload_pdf",__name__)
 def get_paper_details():
     file = request.files.get("paper-pdf")
     user_prompt = request.form.get("userprompt")
-    user_uuid = request.form.get("userId")
 
     # check if the file is not found
     if not file:
@@ -50,13 +49,12 @@ def get_paper_details():
         raise ApiError(500,"LLM response is empty and not correct")
 
     # database call can be here for save the response in database
-    db_status = save_response_in_db(clean_response,file,user_uuid)
-    if not db_status["status"]:
-        raise ApiError(500, "Failed to save response in database")
+    # db_status = save_response_in_db(clean_response,file)
+    # if not db_status["status"]:
+    #     raise ApiError(500, "Failed to save response in database")
 
         # if the status is True than send a response to the client
-    if db_status["status"]:
-         return jsonify({ "statuscode":200,"message":"Full paper Analysis done successfully","final_response_data":clean_response })
+    return jsonify({ "statuscode":200,"message":"Full paper Analysis done successfully","final_response_data":clean_response })
         
 
     
