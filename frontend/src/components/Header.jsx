@@ -26,7 +26,7 @@ export default function Header() {
             <NavLink to="/" className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition">
               Home
             </NavLink>
-            <NavLink to={`/history/${JSON.parse(localStorage.getItem("userId"))}`} className="px-4 py-2 rounded-lg bg-violet-600 text-white     text-sm font-medium hover:bg-violet-700 transition">
+            <NavLink to="/user/history" className="px-4 py-2 rounded-lg bg-violet-600 text-white    text-sm font-medium hover:bg-violet-700 transition">
               History
             </NavLink>
           </div>

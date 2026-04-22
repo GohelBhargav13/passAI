@@ -5,6 +5,7 @@ import PaperOverviewCard from "./PaperOverviewCard"
 import StrategyCard from "./StrategyCard"
 import UserPrompt from "./UserPrompt"
 import QuestionCard from "./QuestionCard"
+import { Loader2 } from "lucide-react"
 
 export default function PaperResponse() {
     const { hid } = useParams()
@@ -13,18 +14,22 @@ export default function PaperResponse() {
     useEffect(() => {
         async function fetchPaperResponse() {
             const response = await apiClient.findPaperResponseById(hid)
-            console.log(JSON.parse(response?.data?.paper_response))
             setApiResponse(JSON.parse(response?.data?.paper_response))
         }
-
         fetchPaperResponse()
     }, [hid])
+
+    if (apiresponse === null) {
+        return (
+            <Loader2 className="w-full h-full justify-center items-center text-black" />
+        )
+    }
 
     return (
         <div className="w-full mt-5 px-5 py-5">
             {/* Top Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
-                <PaperOverviewCard difficulty={apiresponse?.diffculty_paper} />
+                <PaperOverviewCard difficulty={apiresponse?.difficulty_paper} />
                 <StrategyCard strategy={apiresponse?.pass_strategy} />
 
                 {/* check if the prompt is provided */}

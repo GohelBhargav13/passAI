@@ -3,6 +3,7 @@ import { Upload, FileText, X, CheckCircle2, Flashlight } from 'lucide-react';
 import PdfResult from "./PdfResult.jsx"
 import apiClient from '../services/ApiClient.js';
 import toast from 'react-hot-toast';
+import { useNavigate } from 'react-router-dom';
 
 export function FileUpload() {
   const [selectedFile, setSelectedFile] = useState(null);
@@ -11,9 +12,9 @@ export function FileUpload() {
   const [isAnalyzing,setIsAnalyzing] = useState(false)
   const [isGetRes,setIsRes] = useState(false)
   const [apiresponse,setApiResponse] = useState(null)
-  const [userId,setUserId] = useState(null)
   const [isUserPrompt,setUserPrompt] = useState(null)
   const fileInputRef = useRef(null);
+  const navigate = useNavigate();
 
   const handleFileSelect = (event) => {
     const file = event.target.files[0];
@@ -56,7 +57,6 @@ export function FileUpload() {
       try {
         const  fd = new FormData()
         fd.append("paper-pdf",selectedFile)
-        fd.append("userId",userId)
         fd.append("userprompt",isUserPrompt)
 
         setIsAnalyzing(true)
@@ -75,8 +75,13 @@ export function FileUpload() {
         if (typeof response?.final_response_data === "string") {
           try {
               const formattedResponse = response.final_response_data.replace(/\n/g, "");
-              setApiResponse(JSON.parse(formattedResponse))
-              setIsRes(true)
+
+              // for the immediate response in the state not getting a null value for the api response
+              const parsedResponse = JSON.parse(formattedResponse);
+              setApiResponse(parsedResponse)
+
+              console.log("Now the navigation is happening with the api response:");
+              navigate("/pdf-result",{ state: { apiresponse:apiresponse } })
           } catch (error) {
               console.error("Error parsing API response:", error);
               toast.error("Failed to parse analysis results.");
@@ -90,7 +95,10 @@ export function FileUpload() {
               setIsAnalyzing(false)
               setIsRes(true)
               setUserPrompt(null)
-              setApiResponse(response?.final_response_data)
+
+              const response_data = response?.final_response_data
+              console.log("Now the navigation is happening with the api response:",apiresponse);
+              navigate("/pdf-result",{ state: response_data })
         }
       }catch(error){
         console.error('Error uploading file:', error);
@@ -121,25 +129,10 @@ export function FileUpload() {
     return Math.round(bytes / Math.pow(k, i) * 100) / 100 + ' ' + sizes[i];
   };
 
-  // for fecth the userid from the local storage and set it to the state
-  useEffect(() => {
-
-    // check first userid is there in localstorage or not
-    if (JSON.parse(localStorage.getItem("userId")) !== null) {
-        setUserId(JSON.parse(localStorage.getItem("userId")))
-    }else{
-        const userId = crypto.randomUUID().trim();
-        localStorage.setItem("userId",JSON.stringify(userId))
-        setUserId(userId)
-    }
-
-  },[])
-
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-10 mb-2 ">
   
       {/* Upload Card */}
-      { !isGetRes ? (
           <div className="bg-white rounded-3xl shadow-xl shadow-violet-500/10 p-5 mt-4 border border-violet-100">
         <form onSubmit={handleSubmit}>
           {/* Upload Area */}
@@ -209,7 +202,7 @@ export function FileUpload() {
             )}
           </div>
             <div>
-                    <input type="text" className='w-full h-full py-2 px-2 bg-linear-to-br from-violet-100 to-fuchsia-100 rounded-sm flex items-center justify-center mt-2' placeholder="Enter what you want..." onChange={(e) => setUserPrompt(e.target.value) } /> 
+                    <input type="text" className='w-full h-full py-2 px-2 bg-linear-to-br from-violet-100 to-fuchsia-100 rounded-sm flex items-center justify-center mt-2' placeholder="Enter what you want...(optional)" onChange={(e) => setUserPrompt(e.target.value) } /> 
             </div>
           <div className='flex gap-3'>
           {/* Submit Button */}
@@ -259,9 +252,6 @@ export function FileUpload() {
           </div>
         </div>
       </div>
-      ) : (
-          <PdfResult apiresponse={apiresponse} />
-      ) }
     </div>
   );
 }
