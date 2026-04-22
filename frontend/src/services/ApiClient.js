@@ -28,13 +28,33 @@ class ApiClient {
     }
 
     // find the user history api call
-    async findUserHistory(uuid){
-        return this.apiFetch(`/user/history/${uuid}`)
+    async findUserHistory(useremail){
+        return this.apiFetch(`/user/history`,'POST',{ user_email:useremail })
     }
 
     // find the user history api call
     async findPaperResponseById(historyId){
         return this.apiFetch(`/user/history/details/${historyId}`)
+    }
+
+    // save the user response to the database
+    async saveUserResponse(data){
+        return this.apiFetch('/user/history/save-response', 'POST', data)
+    }
+
+    // verify otp 
+    async verifyOtpFunc(user_otp){
+        return this.apiFetch("/user/verify-otp",'POST',{ user_otp:user_otp })
+    }
+
+    // save a paper analysis in the database
+    async saveUserPaperAnalysis(data){
+        return this.apiFetch("/user/save/user-response",'POST',data)
+    }
+
+    // user resend otp handler
+    async userResendOtp(useremail){
+        return this.apiFetch("/user/resend-otp","POST",{ useremail })
     }
 }
 
