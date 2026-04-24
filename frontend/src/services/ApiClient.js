@@ -56,6 +56,11 @@ class ApiClient {
     async userResendOtp(useremail){
         return this.apiFetch("/user/resend-otp","POST",{ useremail })
     }
+
+    // paper analysis delete from the history
+    async paperHistoryDelete(hid){
+        return this.apiFetch(`/user/history-delete/${hid}`)
+    }
 }
 
 const apiClient = new ApiClient();

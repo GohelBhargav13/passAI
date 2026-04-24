@@ -109,8 +109,8 @@ export default function PdfResult(){
                 <div className="flex justify-center gap-4">
                   <form method="post" onSubmit={handleSaveResponse} >
                     <input type="email" name="useremail" id="useremail" placeholder="Enter a email" className="border w-65 border-gray-300 rounded-md py-2 px-4 focus:outline-none focus:ring-2 focus:ring-violet-500" onChange={(e) => setUserEmail(e.target.value)} value={userEmail || ''} required/>
-                    <button type="submit" disabled={isSaving || !userEmail} className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition ml-2 disabled:bg-gray-500 disabled:cursor-not-allowed">
-                      { isSaving ? <Loader2 className="w-4 h-4" /> : "Save" }
+                    <button type="submit" disabled={isSaving || !userEmail} className="sm:mt-2 md:px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition ml-2 disabled:bg-gray-500 disabled:cursor-not-allowed">
+                      { isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : "Save" }
                     </button>
                   </form>
                 </div>

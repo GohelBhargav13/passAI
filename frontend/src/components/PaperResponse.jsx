@@ -19,12 +19,11 @@ export default function PaperResponse() {
         fetchPaperResponse()
     }, [hid])
 
-    if (apiresponse === null) {
+    if (!apiresponse) {
         return (
             <Loader2 className="w-full h-full justify-center items-center text-black" />
         )
     }
-
     return (
         <div className="w-full mt-5 px-5 py-5">
             {/* Top Grid */}

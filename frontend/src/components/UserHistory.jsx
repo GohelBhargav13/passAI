@@ -6,6 +6,8 @@ export default function UserHistory() {
   const [userHistory, setUserHistory] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [isSearch,setIsSearching] = useState(false)
+  const [isDeleting,setIsDeleting] = useState(false)
+  const [paperHistoryId,setPaperHistoryId] = useState(null);
 
   const columns = [
     "h_id",
@@ -16,6 +18,7 @@ export default function UserHistory() {
     "subject_code",
     "paper_response",
     "paper_year",
+    "Delete_action"
   ];
 
   const fetchUserHistory = async () => {
@@ -30,7 +33,7 @@ export default function UserHistory() {
       }
 
       setUserHistory(userResponse?.data || []);
-      setUserEmail(null)
+      setUserEmail("")
 
     } catch (error) {
       toast.error("Something went wrong while fetching history");
@@ -38,7 +41,7 @@ export default function UserHistory() {
       setIsSearching(false)
     }finally{
       setIsSearching(false)
-      setUserEmail(null)
+      setUserEmail("")
     }
   };
 
@@ -56,6 +59,29 @@ export default function UserHistory() {
   function handleViewResponse(historyId) {
     window.location.href = `/paper-response/${historyId}`;
   }
+
+  async function handleDeleteHistory(historyId){
+    try {
+      setPaperHistoryId(historyId)
+      setIsDeleting(true)
+       const response = await apiClient.paperHistoryDelete(historyId)
+       if (response?.status) {
+          toast.success(response?.message)
+          setUserHistory(prev => prev.filter(uhis => uhis?.h_id !== historyId))
+       }else{
+          console.error(response?.message)
+          toast.error(response?.message)
+          setIsDeleting(false)
+       }
+      
+    } catch (error) {
+        toast.error(error)
+    }finally{
+      setIsDeleting(false)
+      setPaperHistoryId(null)
+    }
+  }
+
 
   return (
     <div className="min-h-screen bg-violet-50 px-3 py-4 sm:px-6 sm:py-8">
@@ -143,6 +169,15 @@ export default function UserHistory() {
                     </td>
                     <td className="whitespace-nowrap px-4 py-3">
                       {row?.paper_year}
+                    </td>
+                    <td className="whitespace-nowrap px-4 py-3">
+                      <button
+                        onClick={() => handleDeleteHistory(row?.h_id)}
+                        disabled={isDeleting && paperHistoryId === row?.h_id}
+                        className={`rounded-md bg-violet-600 px-3 py-2 text-xs font-semibold text-white transition hover:bg-violet-700 disabled:bg-gray-600 disabled:cursor-not-allowed cursor-pointer`}
+                      >
+                        { isDeleting && paperHistoryId === row?.h_id ? "Deleting..." : "Delete" }
+                      </button>
                     </td>
                   </tr>
                 ))

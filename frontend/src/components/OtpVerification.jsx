@@ -12,7 +12,6 @@ export default function OtpVerification() {
     // fetch the user email for the resend otp
     const handleResendOtp = async() => {
       const useremail = location?.state?.useremail || ""
-      console.log(location)
       try {
         const response = await apiClient.userResendOtp(useremail)
         if (!response?.status) {
@@ -69,7 +68,7 @@ export default function OtpVerification() {
     return(
         <>
         {/* design a otp page for 6 - digit like github otp verification */}
-        <div className="min-h-screen bg-[#0d1117] flex items-center justify-center px-4">
+        <div className="min-h-screen bg-[#dbdbdb] flex items-center justify-center px-4">
       <div className="w-full max-w-sm">
         <div className="border border-white/10 bg-[#161b22] rounded-xl shadow-lg p-6 sm:p-8">
           <div className="flex justify-center mb-5">
