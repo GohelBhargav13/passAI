@@ -90,8 +90,8 @@ def find_user_otp(user_otp: str):
         otp_id = otp_row[0]
         user_id = otp_row[1] 
 
-        update_otp_query = "UPDATE user_otp SET is_used = %s WHERE otp_id = %s"
-        cursor.execute(update_otp_query, ("yes", int(otp_id)))
+        update_otp_query = "DELETE FROM user_otp WHERE otp_id = %s AND is_used = %s"
+        cursor.execute(update_otp_query, (int(otp_id),"yes"))
         conn.commit()
 
         # find user details from the db

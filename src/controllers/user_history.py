@@ -263,3 +263,35 @@ def resend_user_otp():
     finally:
         if cursor : cursor.close()
         if conn : conn.close()
+
+# delete user history from the database
+@user_history.route("/history-delete/<int:hid>",methods=["GET"])
+def delete_user_history(hid):
+    conn = None
+    cursor = None
+    try:
+        conn = get_db_connection()
+        cursor = conn.cursor()
+
+        if not hid:
+            raise ApiError(404,"Unable to load history")
+        
+        if hid is None:
+            raise ApiError(404,"No History found")
+        
+        # call the db to delete the history
+        delete_paper_history = "DELETE FROM user_history WHERE h_id = %s"
+        cursor.execute(delete_paper_history,(int(hid),))
+        conn.commit()
+
+        if cursor.rowcount <= 0:
+            raise ApiError(500, "Internal error while deleting a history")
+        
+        # send the response to frontend history deleted
+        return jsonify({ "status":True, "message":"History deleted successfully", "history_id":hid })
+
+    except ApiError as e:
+        raise e
+    finally:
+        if conn : conn.close()
+        if cursor : cursor.close()
