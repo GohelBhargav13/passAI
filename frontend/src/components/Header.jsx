@@ -38,24 +38,50 @@ export default function Header() {
               History
             </NavLink>
           </div>
-          <div className="flex-col">
-          <div className={`text-violet-500 p-2 md:hidden ${isOpen && "mt-2 duration-500 transition-all" }`}>
-              <MenuIcon onClick={menuHandler}/>
+        <div className="md:hidden flex flex-col items-start gap-2">
+
+            {/* Hamburger Icon */}
+            <button
+              onClick={menuHandler}
+              className={`text-violet-500 p-1 rounded-md hover:bg-violet-50 transition-colors duration-200 ${isOpen && "mt-2"}`}
+            >
+              <MenuIcon />
+            </button>
+
+            {/* Icon Buttons — slide down when open */}
+            <div
+              className={`flex gap-2 overflow-hidden transition-all duration-300 ease-in-out ${
+                isOpen ? "max-h-20 opacity-100" : "max-h-0 opacity-0"
+              }`}
+            >
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `p-2 rounded-xl transition-colors duration-200 ${
+                    isActive
+                      ? "bg-violet-700 text-white"
+                      : "bg-violet-600 text-white hover:bg-violet-700"
+                  }`
+                }
+              >
+                <HomeIcon className="w-4 h-4" />
+              </NavLink>
+
+              <NavLink
+                to="/user/history"
+                className={({ isActive }) =>
+                  `p-2 rounded-xl transition-colors duration-200 ${
+                    isActive
+                      ? "bg-violet-700 text-white"
+                      : "bg-violet-600 text-white hover:bg-violet-700"
+                  }`
+                }
+              >
+                <HistoryIcon className="w-4 h-4" />
+              </NavLink>
+            </div>
+
           </div>
-          <div className={`${isOpen && "flex gap-1 transition-all duration-700"}`}>
-                  { isOpen && (
-                      <>
-                        <NavLink to="/" className={`px-1 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition ${ isOpen && "transition duration-200" }`}>
-                            <HomeIcon />
-                          </NavLink>
-                          
-                          <NavLink to="/user/history" className={`px-1 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition ${ isOpen && "transition duration-200" }`}>
-                            <HistoryIcon />
-                          </NavLink>
-                      </>
-                  ) }
-              </div>
-</div>
         </div>
       </div>
     </nav>
