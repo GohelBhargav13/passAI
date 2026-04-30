@@ -41,7 +41,7 @@ export default function PdfResult(){
 
               navigate("/otp-verification",{ state:{ apiresponse:apiresponse,useremail:userEmail } })
           } else {
-              toast.error("Failed to save response. Please try again.")
+              toast.error(response?.error || "Failed to save response. Please try again.")
           }
         
        } catch (error) {

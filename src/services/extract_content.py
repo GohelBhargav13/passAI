@@ -38,7 +38,7 @@ def extract_pdf_content(file) -> dict:
 
         # check if the data is not found
         if actual_data_index == -1:
-            return { "status":False,"error":"No Questions found" }
+            return { "status":False,"error":"Not a valid paper pdf" }
         if not page_data:
             return {"status":False,"error":"No Page Data found"}
 
