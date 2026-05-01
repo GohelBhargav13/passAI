@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import apiClient from "../services/ApiClient.js";
 import { toast } from "react-hot-toast";
 
-export default function UserHistory() {
+export default function UserHistory({ theme }) {
   const [userHistory, setUserHistory] = useState([]);
   const [userEmail, setUserEmail] = useState("");
   const [isSearch,setIsSearching] = useState(false)
@@ -84,11 +84,11 @@ export default function UserHistory() {
 
 
   return (
-    <div className="min-h-screen bg-violet-50 px-3 py-4 sm:px-6 sm:py-8">
-      <div className="mx-auto max-w-7xl rounded-2xl border border-violet-100 bg-white p-4 shadow-sm sm:p-6">
+    <div className={`min-h-screen ${ theme === "dark" ? "bg-linear-to-br from-slate-950 via-slate-900 to-black text-white font-mono" : "bg-gray-50 text-gray-900 font-mono" } px-3 py-4 sm:px-6 sm:py-8`}>
+      <div className={`mx-auto max-w-7xl rounded-2xl border border-violet-100 ${ theme === "dark" ? "bg-linear-to-br from-fuchsia-500/30 via-black/40 to-violet-500/30 text-white/60" : "bg-white"}  p-4 shadow-sm sm:p-6`}>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-violet-900 sm:text-3xl">
+            <h1 className="text-2xl font-bold text-violet-400/50 sm:text-3xl">
               Paper Search History
             </h1>
             <p className="mt-1 text-sm text-gray-600">

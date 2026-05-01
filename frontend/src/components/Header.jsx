@@ -1,8 +1,8 @@
-import { FileText, HistoryIcon, HomeIcon, MenuIcon } from "lucide-react";
+import { FileText, HistoryIcon, HomeIcon, MenuIcon, MoonIcon, SunIcon } from "lucide-react";
 import { useState } from "react";
 import { NavLink } from "react-router-dom";
 
-export default function Header() {
+export default function Header({ istheme }) {
 
   const [isOpen,setIsOpen] = useState(false)
 
@@ -10,8 +10,20 @@ export default function Header() {
   const menuHandler = () => {
     setIsOpen(prev => !prev)
   }
+
+  // change the theme handler
+  const themeChangeHandler = () => {
+    if(istheme === "dark"){
+      localStorage.setItem("theme","light")
+    } else {
+      localStorage.setItem("theme","dark")
+    }
+    window.location.reload()
+  }
+
   return (
-    <nav className="w-full border-b border-gray-200 bg-white/80 backdrop-blur-md sticky top-0 z-50">
+    // make a navbar shiny like chai code theme and also the icons should be in a circle with a gradient background and also add a hover effect to the icons and also make the navbar responsive
+    <nav className={`w-full border-b border-gray-200 ${ istheme === "dark" ? "bg-linear-to-br from-black via-slate-900 to-black text-gray-400 font-mono" : "bg-white/80" } backdrop-blur-md sticky top-0 z-50`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           
@@ -24,7 +36,7 @@ export default function Header() {
               <h1 className="text-lg sm:text-xl font-bold bg-linear-to-r from-violet-600 to-fuchsia-600 bg-clip-text text-transparent leading-tight">
                 PassAI
               </h1>
-              <p className="text-xs sm:text-sm text-gray-500 leading-tight">
+              <p className={`text-xs sm:text-sm ${ istheme === "dark" ? "text-gray-400" : "text-gray-500" } leading-tight`}>
                 Analyze your GTU papers with ease
               </p>
             </div>
@@ -37,6 +49,9 @@ export default function Header() {
             <NavLink to="/user/history" className="px-4 py-2 rounded-lg bg-violet-600 text-white    text-sm font-medium hover:bg-violet-700 transition">
               History
             </NavLink>
+            <button onClick={themeChangeHandler} className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition cursor-pointer">
+              { istheme === "dark" ? <SunIcon className="w-4 h-4"/> : <MoonIcon className="w-4 h-4" /> }
+            </button>
           </div>
         <div className="md:hidden flex flex-col items-start gap-2">
 
@@ -79,6 +94,9 @@ export default function Header() {
               >
                 <HistoryIcon className="w-4 h-4" />
               </NavLink>
+              <button onClick={themeChangeHandler} className="p-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition cursor-pointer">
+              { istheme === "dark" ? <SunIcon className="w-4 h-4" /> : <MoonIcon className="w-4 h-4" /> }
+            </button>
             </div>
 
           </div>

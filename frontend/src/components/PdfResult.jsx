@@ -8,7 +8,7 @@ import { useLocation,useNavigate } from "react-router-dom"
 import apiClient from "../services/ApiClient";
 import toast from "react-hot-toast";
 
-export default function PdfResult(){
+export default function PdfResult({ theme }) {
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -35,6 +35,7 @@ export default function PdfResult(){
        e.preventDefault();
        try {
           const response =  await apiClient.saveUserResponse({ email: userEmail })
+          console.log(response)
           if(response?.status){
               toast.success(response?.message || "OTP send to you're email")
               setIsOpen(false)
@@ -65,12 +66,12 @@ export default function PdfResult(){
                   {/* Top Grid */}
                   <button className="px-4 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium hover:bg-violet-700 transition mb-2 hover:cursor-pointer" onClick={handleIsOpen}>Save response</button>
                   <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 max-w-7xl mx-auto">
-                    <PaperOverviewCard difficulty={apiresponse?.difficulty_paper} />
-                    <StrategyCard strategy={apiresponse?.pass_strategy} />
+                    <PaperOverviewCard difficulty={apiresponse?.difficulty_paper} theme={theme} />
+                    <StrategyCard strategy={apiresponse?.pass_strategy} theme={theme} />
 
                     {/* check if the prompt is provided */}
                     { apiresponse?.user_prompt?.is_prompt_provided ? (
-                        <UserPrompt userprompt={apiresponse?.user_prompt} />
+                        <UserPrompt userprompt={apiresponse?.user_prompt} theme={theme} />
                     ) : (
                         <></>
                     ) } 
@@ -79,7 +80,7 @@ export default function PdfResult(){
                   {/* Bottom Grid */}
                   <section className="space-y-6 max-w-7xl mx-auto">
                     <div className="flex items-center justify-between">
-                      <h2 className="text-2xl sm:text-3xl font-bold text-slate-900">
+                      <h2 className={`text-2xl sm:text-3xl font-bold mt-2 ${ theme === "dark" ? "text-white" : "text-slate-900" }`}>
                         Question Analysis
                       </h2>
                       <span className="text-sm text-slate-500">
@@ -90,7 +91,7 @@ export default function PdfResult(){
                     {/* Grid: Ensure this is not nested inside something with a restricted width */}
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                       {apiresponse?.questions?.map((item) => (
-                        <QuestionCard key={item.id} item={item} />
+                        <QuestionCard key={item.id} item={item} theme={theme}  />
                       ))}
                     </div>
                   </section>
@@ -101,7 +102,7 @@ export default function PdfResult(){
          { isOpen && (
           // make it mobile responsive and center the form
             <div className="fixed inset-0 opacity-100 flex items-center justify-center z-50 px-4">
-              <div className="bg-white rounded-lg p-6 w-96 border border-gray-300 shadow-lg">
+              <div className={` ${ theme === "dark" ? " bg-linear-to-br from-fuchsia-400/50 via-black/40 to-violet-500/50 " : "" } rounded-lg p-6 w-96 border border-gray-300 shadow-lg`}>
                 <div className="w-full flex gap-5 mb-2">
                 <h2 className="text-xl font-semibold mb-4 justify-center">Save Response</h2>
                 <X className="text-red-500 cursor-pointer" onClick={handleIsOpen} />
