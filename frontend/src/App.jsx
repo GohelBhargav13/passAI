@@ -30,7 +30,7 @@ function App() {
           <Route path="/user/history" element={<UserHistory theme={theme} />} />
           <Route path="/paper-response/:hid" element={<PaperResponse theme={theme} />} />
           <Route path="/pdf-result" element={<PdfResult theme={theme} />} />
-          <Route path="/otp-verification" element={ <OtpVerification /> } />
+          <Route path="/otp-verification" element={ <OtpVerification theme={theme} /> } />
           <Route path="*" element={<div className="flex items-center justify-center h-screen"><h1 className="text-3xl font-bold text-gray-700">404 - Page Not Found</h1></div>} />
         </Routes>
       </BrowserRouter>

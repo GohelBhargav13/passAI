@@ -3,7 +3,7 @@ import { data, useLocation,useNavigate } from "react-router-dom";
 import apiClient from "../services/ApiClient";
 import toast from "react-hot-toast";
 
-export default function OtpVerification() {
+export default function OtpVerification({ theme }) {
     const [code,setCode] = useState("")
     const [isVerify,setIsVerify] = useState(false)
     const location = useLocation()
@@ -68,9 +68,9 @@ export default function OtpVerification() {
     return(
         <>
         {/* design a otp page for 6 - digit like github otp verification */}
-        <div className="min-h-screen bg-[#dbdbdb] flex items-center justify-center px-4">
+        <div className={`min-h-screen ${ theme === "dark" ? "bg-linear-to-br from-slate-950 via-slate-900 to-black text-white font-mono" : "bg-gray-200" } flex items-center justify-center px-4`}>
       <div className="w-full max-w-sm">
-        <div className="border border-white/10 bg-[#161b22] rounded-xl shadow-lg p-6 sm:p-8">
+        <div className={`border border-white/10 ${ theme === "dark" ? "bg-linear-to-br from-fuchsia-500/30 via-black/40 to-violet-500/30 border-2 border-white/40" : "bg-black/90 border-2 border-white/40" } rounded-xl shadow-lg p-6 sm:p-8`}>
           <div className="flex justify-center mb-5">
             <svg
               viewBox="0 0 16 16"
@@ -106,7 +106,7 @@ export default function OtpVerification() {
             <button
               type="submit"
               disabled={code.length < 6 || isVerify}
-              className={`w-full mt-4 h-10 rounded-md bg-[#238636] text-white text-sm font-medium hover:bg-[#2ea043] transition cursor-pointer disabled:bg-gray-400 disabled:text-white disabled:opacity-50 disabled:cursor-not-allowed`}
+              className={`w-full mt-4 h-10 rounded-md ${ theme === "dark" && !isVerify && code.length === 6 ? "bg-linear-to-r from-violet-600 to-fuchsia-600 hover:from-violet-700 hover:to-fuchsia-700 text-white shadow-lg shadow-violet-500/30 hover:shadow-xl hover:shadow-violet-500/40 transform hover:scale-[1.02] disabled:bg-gray-400 disabled:text-white disabled:opacity-50 disabled:cursor-not-allowed" : "bg-[#238636] text-white text-sm font-medium hover:bg-[#2ea043] transition cursor-pointer" } disabled:bg-gray-400 disabled:text-white disabled:opacity-50 disabled:cursor-not-allowed`}
             >
               { isVerify ? "Verifying..." : "Verify"}
             </button>

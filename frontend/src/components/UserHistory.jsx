@@ -85,10 +85,10 @@ export default function UserHistory({ theme }) {
 
   return (
     <div className={`min-h-screen ${ theme === "dark" ? "bg-linear-to-br from-slate-950 via-slate-900 to-black text-white font-mono" : "bg-gray-50 text-gray-900 font-mono" } px-3 py-4 sm:px-6 sm:py-8`}>
-      <div className={`mx-auto max-w-7xl rounded-2xl border border-violet-100 ${ theme === "dark" ? "bg-linear-to-br from-fuchsia-500/30 via-black/40 to-violet-500/30 text-white/60" : "bg-white"}  p-4 shadow-sm sm:p-6`}>
+      <div className={`mx-auto max-w-7xl rounded-2xl border border-violet-100 ${ theme === "dark" ? "bg-linear-to-br from-fuchsia-500/30 via-black/40 to-violet-500/30 text-white/10" : "bg-white"}  p-4 shadow-sm sm:p-6`}>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h1 className="text-2xl font-bold text-violet-400/50 sm:text-3xl">
+            <h1 className={`text-2xl font-bold ${ theme === "dark" ? "text-violet-400/50" : "text-violet-600" }  sm:text-3xl`}>
               Paper Search History
             </h1>
             <p className="mt-1 text-sm text-gray-600">
@@ -106,7 +106,7 @@ export default function UserHistory({ theme }) {
               value={userEmail}
               onChange={(e) => setUserEmail(e.target.value)}
               placeholder="Enter user email"
-              className="h-11 w-full rounded-lg border border-violet-200 px-3 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200 sm:w-72"
+              className={`h-11 w-full rounded-lg border border-violet-200 px-3 text-sm outline-none focus:border-violet-500 focus:ring-2 focus:ring-violet-200 sm:w-72 ${ theme === "dark" ? "bg-transparent text-white" : "bg-white text-gray-900" }`}
             />
             <button
               type="submit"
@@ -139,7 +139,7 @@ export default function UserHistory({ theme }) {
                 userHistory.map((row, index) => (
                   <tr
                     key={index}
-                    className={index % 2 === 0 ? "bg-white" : "bg-violet-50/40"}
+                    className={index % 2 === 0 ? "bg-white" : "bg-violet-50/80"}
                   >
                     <td className="whitespace-nowrap px-4 py-3">{index + 1}</td>
                     <td className="whitespace-nowrap px-4 py-3">
