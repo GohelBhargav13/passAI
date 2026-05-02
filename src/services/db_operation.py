@@ -56,7 +56,7 @@ def save_response_in_db(llm_response,user_email=None):
         if cursor.rowcount <= 0:
             raise ApiError(500,"Error while inserting the paper analysis in database")
 
-        return { "status":True, "message":"Data inserted successfully in DB","data":cursor.lastrowid }
+        return { "status":True, "message":"Paper analysis saved successfully with you're email","data":cursor.lastrowid }
     
     finally :
         cursor.close()

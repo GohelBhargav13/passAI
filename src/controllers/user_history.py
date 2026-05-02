@@ -1,10 +1,10 @@
 from flask import Blueprint,request,jsonify
+from src.services.send_mail_by_api import send_email_api
 from src.utills.apierror import ApiError
 from src.config.db_config import get_db_connection
 from src.services.db_operation import check_user_in_db
 from src.services.generate_otp import generate_otp_code
 from src.services.generate_email_template import generate_email_template
-from src.services.send_mail import send_email
 from src.services.encrypt_otp import encrypt_otp
 from src.services.db_operation import find_user_otp
 from src.services.db_operation import save_response_in_db
@@ -137,7 +137,7 @@ def save_user_response_db():
         if cursor.rowcount <= 0:
             raise ApiError(500, "Internal error inserting OTP record")
 
-        email_result = send_email(user_email, generate_email_template(user_otp))
+        email_result = send_email_api(user_email, generate_email_template(user_otp))
 
         if email_result["status"]:
             return jsonify({ "status": True, "message": "OTP sent successfully to your email" })
@@ -254,7 +254,7 @@ def resend_user_otp():
         conn.commit()
 
         # send mail to the user
-        mail_response = send_email(user_email,generate_email_template(user_otp),"Your New OTP Code")
+        mail_response = send_email_api(user_email,generate_email_template(user_otp),"Your New OTP Code")
         
         if mail_response["status"] is None:
             raise ApiError(500,"Internal error while sending a email")
