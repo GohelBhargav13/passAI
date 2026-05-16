@@ -1,0 +1,20 @@
+services:
+  backend:
+    build: .
+    container_name: passai_backend_container
+    ports:
+      - 5000:5000
+    env_file:
+      - ./requirements.txt
+
+  frontend:
+    build: ./frontend
+    container_name: passai_frontend_container
+    ports:
+      - 5173:80
+    depends_on:
+      - backend
+
+networks:
+  default:
+    driver: bridge
