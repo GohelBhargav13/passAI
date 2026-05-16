@@ -6,12 +6,12 @@ export default function PaperOverviewCard({ difficulty,theme }) {
       <div className={`h-3 w-full overflow-hidden rounded-full bg-slate-100 hover:scale-105 transition-transform cursor-pointer ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
         <div
           className="h-full rounded-full bg-linear-to-r from-violet-600 to-fuchsia-500"
-          style={{ width: difficulty + "%" || "0%" }}
+          style={{ width: difficulty.includes("%") ? difficulty : `${difficulty}%` || "0%" }}
         />
       </div>
 
       <p className={`mt-4 text-base leading-7 hover:scale-105 hover:ml-1 transition-transform ${theme === "dark" ? "text-gray-400" : "text-gray-600"}`}>
-        { difficulty ? difficulty + "%" : "N/A" } difficult
+        { difficulty ? difficulty.includes("%") ? difficulty : `${difficulty}%` : "N/A" } difficult
       </p>
 
     </div>
