@@ -1,5 +1,5 @@
 import os
-from groq import Groq
+from groq import Groq,RateLimitError,APIConnectionError
 from dotenv import load_dotenv
 from src.utills.apierror import ApiError
 
@@ -93,6 +93,8 @@ def call_llm_handler(header_data: str, paper_questions: str, user_prompt: str):
             "message": "Data fetched from LLM successfully",
             "final_output": response.choices[0].message.content
         }
-    
-    except Exception as e:
-        raise ApiError(500, f"LLM call failed: {str(e)}")
+    except RateLimitError as e: # rate-limiting error with catch with groq
+        print("rate-limiting api error : ", e.message)
+        raise ApiError(e.status_code,e.message)
+    except APIConnectionError as e:  # api connection error catch with groq
+        raise ApiError(500,e.message)
