@@ -1,5 +1,5 @@
 import os
-from redis import Redis
+import redis 
 from dotenv import load_dotenv
 from src.utills.apierror import ApiError
 
@@ -11,8 +11,4 @@ if not redis_cloud_url:
     raise ApiError(500,"Cloud URL is not found")
 
 def redis_create_object():
-    return Redis(
-        host=redis_cloud_url,
-        decode_responses=True,
-        retry_on_timeout=True
-    )
+    return redis.from_url(redis_cloud_url, decode_responses=True)
