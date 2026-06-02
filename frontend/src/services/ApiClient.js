@@ -1,7 +1,7 @@
 class ApiClient {
 
     // make a enhanced fetch function that automatically adds the base URL and handles errors
-    BASE_URL = "http://localhost:5000/api/v1";
+    BASE_URL = "https://passai-nrmh.onrender.com/api/v1";
     
     async apiFetch(endpoint,method='GET',data=null,isForm=false){
         const headers = {}
