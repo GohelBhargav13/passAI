@@ -83,7 +83,7 @@ def call_llm_handler(header_data: str, paper_questions: str, user_prompt: str):
                     "content": prompt
                 }
             ],
-            model="llama-3.3-70b-versatile", 
+            model="llama-prompt-guard-2-86m", 
             temperature=0.2,
             max_tokens=6000                   
         )
